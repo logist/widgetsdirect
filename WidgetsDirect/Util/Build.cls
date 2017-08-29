@@ -25,11 +25,11 @@ XData BuildManifest
   Description="${NAMESPACE} application" 
   Recurse="true" 
   ServeFiles="true"
-   AuthenticationMethods="64" />
+   AuthenticationMethods="32" />
  <CSPApplication name="${NAMESPACE}" Directory="${DBDIR}/csp" Url="/widgetsdirect/rest"
   Description="${NAMESPACE} REST application" 
   DispatchClass="REST.Dispatch"
-   AuthenticationMethods="64" />
+   AuthenticationMethods="32" />
 </Configuration>
 
 
