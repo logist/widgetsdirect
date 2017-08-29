@@ -2,7 +2,7 @@ node {
     def app
     stage "Prepare environment"
         checkout scm
-        app  = docker.build("widgetsdirect")
+        app  = docker.build("widgetsdirect", "-f WidgetsDirect/Dockerfile")
 
     stage "Test and validate"
         app.inside {
