@@ -9,4 +9,23 @@ node {
             sh "echo Testing..."
             //junit 'reports/**/*.xml'
         }
+    stage('Deploy - Staging (port 20000)') {
+        steps {
+            sh 'docker rm -f staging && echo "staging removed" || echo "staging does not exist"'
+            app.run("--name staging -d -p 20000:57772")
+        }
+    }
+
+    stage('Sanity check') {
+        steps {
+            input "Does the staging environment look ok?"
+        }
+    }
+
+    stage('Deploy - Production (port 30000)') {
+        steps {
+            sh 'docker rm -f production && echo "production removed" || echo "production does not exist"'
+            app.run("--name production -d -p 30000:57772")
+        }
+    }
 }
