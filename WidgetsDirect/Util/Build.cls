@@ -1,44 +1,42 @@
+/// This class is using %Installer package to build an application
 Class Util.Build {
 
-
+/// This is a build manifest. Here we describe build steps in XML format.
 XData BuildManifest
 {
 <Manifest>
-<!-- You have to specify JOBNAME with job name via parameter string -->
-<If Condition="&quot;${JOBNAME}&quot;=&quot;&quot;"><Error /></If>
+<!-- You have to specify NAMESPACE via parameter string -->
+<If Condition="&quot;${NAMESPACE}&quot;=&quot;&quot;"><Error /></If>
 <!-- You have to specify SRCDIR with source code directory via parameter string -->
 <If Condition="&quot;${SRCDIR}&quot;=&quot;&quot;"><Error /></If>
+<!-- You have to specify DBDIR with database parent directory via parameter string -->
+<If Condition="&quot;${DBDIR}&quot;=&quot;&quot;"><Error /></If>
 
-<!-- Namespace -->
-<Var Name="NAMESPACE" Value="${JOBNAME}" />
 
 <!-- Delete old namespace and create new one -->
 <Namespace Name="${NAMESPACE}" Create="overwrite" 
   Code="${NAMESPACE}-APP" Data="${NAMESPACE}-DATA">
 <Configuration>
+<!-- Have separate databases for code and data -->
 <Database Name="${NAMESPACE}-APP" Dir="${DBDIR}/app" Create="overwrite" InitialSize="1" ExpansionSize="1" />
 <Database Name="${NAMESPACE}-DATA" Dir="${DBDIR}/data" Create="overwrite" InitialSize="1" ExpansionSize="1" />
- <CSPApplication name="${NAMESPACE}" Directory="${DBDIR}/csp" Url="/csp/${NAMESPACE}"
-  Description="Build application" 
-  Recurse="true" 
-  ServeFiles="true"
-   AuthenticationMethods="32" />
+<!-- Two CSP applications: for CSP requests and for REST -->
  <CSPApplication name="${NAMESPACE}" Directory="${DBDIR}/csp" Url="/widgetsdirect"
-  Description="widgetsdirect application" 
+  Description="${NAMESPACE} application" 
   Recurse="true" 
   ServeFiles="true"
-   AuthenticationMethods="32" />
+   AuthenticationMethods="64" />
  <CSPApplication name="${NAMESPACE}" Directory="${DBDIR}/csp" Url="/widgetsdirect/rest"
-  Description="widgetsdirect REST application" 
+  Description="${NAMESPACE} REST application" 
   DispatchClass="REST.Dispatch"
-   AuthenticationMethods="32" />
+   AuthenticationMethods="64" />
 </Configuration>
 
 
 <!-- Invoke compile method -->
 <Invoke Class="%SYSTEM.OBJ" Method="ImportDir" CheckStatus="true">
 <Arg name="dir" Value="${SRCDIR}" />
-<Arg name="wildcards" Value="" />
+<Arg name="wildcards" Value="*.cls" />
 <Arg name="qspec" Value="ck" />
 <Arg name="errorlog" Value="" />
 <Arg name="recursive" Value="1" />
@@ -50,9 +48,9 @@ XData BuildManifest
 }
 
 /// This method is called to pass parameters into generated build method
-ClassMethod Build(pJobName As %String = "BUILD", pSrcDir As %String = "C:\source\", pDbDir) As %Status
+ClassMethod Build(pNameSpace As %String = "BUILD", pSrcDir As %String = "C:\source\", pDbDir) As %Status
 {
-	set vars("JOBNAME")=$g(pJobName)
+	set vars("NAMESPACE")=$g(pNameSpace)
 	set vars("SRCDIR")=##class(%File).NormalizeDirectory($g(pSrcDir))
 	set vars("DBDIR")=$g(pDbDir,vars("SRCDIR")_"db")
 
