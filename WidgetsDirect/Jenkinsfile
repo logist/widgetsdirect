@@ -11,7 +11,7 @@ node {
 			sh "ccontrol start CACHE"
             sh "csession CACHE <temp.cmd"
 			sh "ccontrol stop CACHE quietly"
-            junit "${WORKSPACE}/test.xml"
+            junit "test.xml"
         }
         
 }
