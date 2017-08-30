@@ -5,12 +5,12 @@ node {
         app  = docker.build("widgetsdirect", "WidgetsDirect")
 
     stage "Test and validate"
-        app.inside {
+        app.withRun {
             sh "echo Testing..."
             sh 'printf "_system\nSYS\n zn \"WidgetsDirect\" do ##class(UnitTest.Trak).RunRecursive() do ##class(UnitTest.Manager).OutputResultsXml(\"/tmp/test.xml\")" >>temp.cmd'
-			sh "ccontrol start CACHE"
+			//sh "ccontrol start CACHE"
             sh "csession CACHE <temp.cmd"
-			sh "ccontrol stop CACHE"
+			//sh "ccontrol stop CACHE"
             junit "/tmp/test.xml"
         }
         
