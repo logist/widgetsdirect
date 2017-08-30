@@ -7,7 +7,7 @@ node {
     stage "Test and validate"
         app.inside('-u root') {
             sh "echo Testing..."
-            sh 'printf "_system\nSYS\n zn \\"WidgetsDirect\\" do ##class(UnitTest.Widget).RunRecursive() do ##class(UnitTest.Manager).OutputResultsXml(\\"${WORKSPACE}/test.xml\\")" >temp.cmd'
+            sh 'printf "_system\nSYS\n zn \\"WidgetsDirect\\" do ##class(UnitTest.Widget).RunRecursive() do ##class(UnitTest.Manager).OutputResultsXml(\\"${WORKSPACE}/test.xml\\") halt" >temp.cmd'
 			sh "ccontrol start CACHE"
             sh "csession CACHE <temp.cmd"
 			sh "ccontrol stop CACHE quietly"
