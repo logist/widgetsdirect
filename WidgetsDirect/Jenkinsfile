@@ -7,19 +7,9 @@ node {
     stage "Test and validate"
         app.inside {
             sh "echo Testing..."
-            //junit 'reports/**/*.xml'
+            sh "printf _system\nSYS\n zn \"WidgetsDirect\" do ##class(UnitTest.Trak).RunRecursive() do ##class(UnitTest.Manager).OutputResultsXml(\"/tmp/test.xml\") >>temp.cmd"
+            sh "csession CACHE <temp.cmd"
+            junit "/tmp/test.xml"
         }
         
-    stage "Deploy - Staging (port 20000)"
-        sh "docker rm -f staging && echo staging removed || echo staging does not exist"
-        app.run("--name staging -d -p 20000:57772")
-
-
-    stage "Sanity check"
-        input "Does the staging environment look ok?"
-
-
-    stage "Deploy - Production (port 30000)"
-        sh "docker rm -f production && echo production removed || echo production does not exist"
-        app.run("--name production -d -p 30000:57772")
 }
